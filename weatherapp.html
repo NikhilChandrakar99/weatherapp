@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background: url('https://getwallpapers.com/wallpaper/full/6/f/1/1369498-cool-best-weather-wallpaper-1920x1080-phone.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .weather-container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card img {
+            width: 70px;
+            align-items: center;
+        }
+        .btn-custom {
+            background-color: #ff0011;
+            color: white;
+            border-radius: 20px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        .btn-custom:hover {
+            background-color: #360d03;
+            color: aliceblue;
+        }
+        .form-control {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container weather-container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center mb-4">Welcome to My Weather App!</h1>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="cityname" placeholder="Enter city name">
+                    <button onclick="getInfo()" type="button" class="btn btn-custom">Get Weather</button>
+                </div>
+                <div id="mydiv" class="card p-4 text-center">
+                    <h5 class="card-title">Weather Information</h5>
+                    <p class="card-text">Enter a city name to get weather details.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let getInfo = async () => {
+            console.log("hello!");
+            let city = document.getElementById('cityname').value;
+            let key = 'd72729578543cfc435344f99b226b1c9';
+            let wurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&units=metric`
+            let resp = await fetch(wurl);
+            console.log(resp);
+            let data = await resp.json();
+            console.log(data);
+            let maxtemp = data.main.temp_max;
+            let mintemp = data.main.temp_min;
+            console.log(maxtemp);
+            console.log(mintemp);
+            let weather = data.weather[0].main;
+            let weatherDesc = data.weather[0].description;
+            let windSpeed = data.wind.speed;
+            console.log(data.name);  
+            let wicon = data.weather[0].icon;
+            let wimagesrc = "http://www.openweathermap.org/img/w/" + wicon + ".png";
+
+            document.getElementById("mydiv").innerHTML = `
+                <h5 class="card-title">Weather today in <b>${data.name}</b></h5>
+                <img src='${wimagesrc}' alt='weather image here'/>
+                <p class="card-text">
+                    Max Temp: ${maxtemp}°C <br>
+                    Min Temp: ${mintemp}°C <br>
+                    Weather: ${weather} <br>
+                    Description: ${weatherDesc} <br>
+                    Wind Speed: ${windSpeed} m/s
+                </p>
+            `;
+
+            let backgroundImages = {
+                Clear: "url('https://th.bing.com/th?id=OIP.BkCkbet2P_4lqs0Z2KvblQHaEV&w=326&h=191&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2')",
+                Clouds: "url('https://th.bing.com/th/id/R.978fdeab51734b2de2642f09545ad09e?rik=PQ27zcf1mwTfqQ&riu=http%3a%2f%2fwallup.net%2fwp-content%2fuploads%2f2015%2f12%2f118795-landscape-nature-field-clouds-storm-rain.jpg&ehk=bAK751tCjyaGsJhjQ05o71QbY2c6VvggGjeUqgfAcME%3d&risl=1&pid=ImgRaw&r=0')",
+                Rain: "url('https://th.bing.com/th/id/OIP.W_dKMLzkhZuFvXR8ndMzUwHaEK?rs=1&pid=ImgDetMain')",
+                Snow: "url('https://wallpapercave.com/wp/wp5076054.jpg')",
+                Mist: "url('https://wallpaperaccess.com/full/722643.jpg')",
+                Thunderstorm: "url('https://wallpapercave.com/wp/wp6486585.jpg')"
+            };
+
+            document.body.style.backgroundImage = backgroundImages[weather] || "url('https://example.com/default.jpg')";
+        }
+    </script>
+</body>
+</html>
